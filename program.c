@@ -4,12 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int find_greatest_common_divisor(int a, int b)
+int find_greatest_common_divisor(int first_number, int second_number)
 {
-    return b ? find_greatest_common_divisor(b, a % b) : a;
+    return second_number ? find_greatest_common_divisor(second_number, first_number % second_number) : first_number;
 }
 
-int get_random_integer(int exclusive_lower_bound, int exclusive_upper_bound)
+int draw_random_integer(int exclusive_lower_bound, int exclusive_upper_bound)
 {
     return rand() % (exclusive_upper_bound - exclusive_lower_bound + 1) + exclusive_lower_bound;
 }
@@ -69,8 +69,8 @@ int test_primality(int prime_candidate, int rounds)
     
     for (int round = 1; round < rounds; round++)
     {
-        // get random base
-        int base = get_random_integer(1, prime_candidate_less_one);
+        // draw random base
+        int base = draw_random_integer(1, prime_candidate_less_one);
         int greatest_common_divisor = find_greatest_common_divisor(base, prime_candidate);
         
         if (greatest_common_divisor > 1 && greatest_common_divisor < prime_candidate) return 0;
@@ -93,17 +93,17 @@ int test_primality(int prime_candidate, int rounds)
     return 1;
 }
 
-int main(int argc, char *argv[])
+int main(int argument_count, char *arguments[])
 {
     srand(time(NULL));
     
     int prime_candidate;
     
-    if (argc > 1)
+    if (argument_count > 1)
     {
-        for (int argument = 1; argument < argc; argument++)
+        for (int argument = 1; argument < argument_count; argument++)
         {
-            prime_candidate = atoi(argv[argument]);
+            prime_candidate = atoi(arguments[argument]);
             
             if (test_primality(prime_candidate, 12)) printf("%d is a prime number.", prime_candidate);
             else printf("%d is not a prime number.", prime_candidate);
