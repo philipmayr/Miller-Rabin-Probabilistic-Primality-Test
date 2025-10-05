@@ -33,23 +33,25 @@ int exponentiate(int base, int index)
 
 int exponentiate_modularly(int base, int index, int modulus)
 {
-    if (base == 0) return 0;
-    if (index == 0) return 1;
+    if (modulus < 2) return 0;
+    if (index == 0) return 1 % modulus;
     
-    if (base > modulus) base %= modulus;
+    base %= modulus;
+    
+    if (base < 0) base += modulus;
     if (index == 1) return base;
     
-    int residue = 1;
+    int modular_power = 1;
     
     while (index)
     {
-        if (index & 1) residue = (residue * base) % modulus;
+        if (index & 1) modular_power = (modular_power * base) % modulus;
         
         base = (base * base) % modulus;
         index >>= 1;
     }
     
-    return residue;
+    return modular_power;
 }
 
 int test_primality(int prime_candidate, int rounds)
