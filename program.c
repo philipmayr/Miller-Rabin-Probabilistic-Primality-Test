@@ -16,17 +16,14 @@ int draw_random_integer(int exclusive_lower_bound, int exclusive_upper_bound)
 
 int exponentiate(int base, int index)
 {
-    if (base == 0) return 0;
+    if (index < 0 || base == 0) return 0;
     if (index == 0) return 1;
     if (index == 1) return base;
     
     int power = 1;
     
-    while (index)
-    {
-        power *= power * exponentiate(base, index & 1);
-        index >>= 1;
-    }
+    for (; index; index >>= 1, base *= base)
+        if (index & 1) power *= base;
     
     return power;
 }
