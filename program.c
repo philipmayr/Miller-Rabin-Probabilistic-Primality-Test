@@ -47,9 +47,9 @@ int test_primality(int prime_candidate, int rounds)
     int prime_candidate_less_one = prime_candidate - 1;
     int multiplier = 0;
     
-    while ((prime_candidate_less_one & 1) == 0)
+    while (~prime_candidate_less_one & 1)
     {
-        prime_candidate_less_one_binary_factor_count++;
+        prime_candidate_less_one_binary_power_factor_coun++;
         prime_candidate_less_one >>= 1;
     }
     
@@ -67,7 +67,7 @@ int test_primality(int prime_candidate, int rounds)
         
         if (base != 1 && base != prime_candidate_less_one)
         {
-            for (int index = 1; index < prime_candidate_less_one_binary_factor_count && base != prime_candidate_less_one; index++)
+            for (int index = 1; index < prime_candidate_less_one_binary_power_factor_coun && base != prime_candidate_less_one; index++)
             {
                 base = (base * base) % prime_candidate;
                 
