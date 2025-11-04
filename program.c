@@ -1,3 +1,4 @@
+
 // Miller-Rabin Primality Test
 
 #include <time.h>
@@ -12,20 +13,6 @@ int find_greatest_common_divisor(int first_number, int second_number)
 int draw_random_integer(int exclusive_lower_bound, int exclusive_upper_bound)
 {
     return rand() % (exclusive_upper_bound - exclusive_lower_bound + 1) + exclusive_lower_bound;
-}
-
-int exponentiate(int base, int index)
-{
-    if (index < 0 || base == 0) return 0;
-    if (index == 0) return 1;
-    if (index == 1) return base;
-    
-    int power = 1;
-    
-    for (; index; index >>= 1, base *= base)
-        if (index & 1) power *= base;
-    
-    return power;
 }
 
 int exponentiate_modularly(int base, int index, int modulus)
@@ -56,17 +43,19 @@ int test_primality(int prime_candidate, int rounds)
     if (~prime_candidate & 1 || prime_candidate < 2) return 0;
     if (prime_candidate == 2) return 1;
     
-    int greatest_power_of_two_factor_of_prime_candidate_less_one = 1;
+    int prime_candidate_less_one_binary_factor_count = 0;
     int prime_candidate_less_one = prime_candidate - 1;
+    int multiplier = 0;
     
-    while (prime_candidate_less_one % exponentiate(2, greatest_power_of_two_factor_of_prime_candidate_less_one) == 0) 
-        greatest_power_of_two_factor_of_prime_candidate_less_one++;
-        
-    greatest_power_of_two_factor_of_prime_candidate_less_one--;
+    while ((prime_candidate_less_one & 1) == 0)
+    {
+        prime_candidate_less_one_binary_factor_count++;
+        prime_candidate_less_one >>= 1;
+    }
     
-    int multiplier = prime_candidate_less_one / exponentiate(2, greatest_power_of_two_factor_of_prime_candidate_less_one);
+    multiplier = prime_candidate_less_one; 
     
-    for (int round = 1; round < rounds; round++)
+    for (int round = 0; round < rounds; round++)
     {
         // draw random base
         int base = draw_random_integer(1, prime_candidate_less_one);
@@ -78,9 +67,9 @@ int test_primality(int prime_candidate, int rounds)
         
         if (base != 1 && base != prime_candidate_less_one)
         {
-            for (int index = 1; index < greatest_power_of_two_factor_of_prime_candidate_less_one && base != prime_candidate_less_one; index++)
+            for (int index = 1; index < prime_candidate_less_one_binary_factor_count && base != prime_candidate_less_one; index++)
             {
-                base = exponentiate_modularly(base, 2, prime_candidate);
+                base = (base * base) % prime_candidate;
                 
                 if (base == 1) return 0;
             }
